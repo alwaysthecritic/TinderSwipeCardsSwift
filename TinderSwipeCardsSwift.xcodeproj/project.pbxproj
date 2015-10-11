@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		453738711BC3A9B200796CC7 /* StoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 453738701BC3A9B100796CC7 /* StoryView.xib */; settings = {ASSET_TAGS = (); }; };
 		CC2D002B1AF1D31400AF5C5F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D002A1AF1D31400AF5C5F /* AppDelegate.swift */; };
 		CC2D002D1AF1D31400AF5C5F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D002C1AF1D31400AF5C5F /* ViewController.swift */; };
 		CC2D00301AF1D31400AF5C5F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CC2D002E1AF1D31400AF5C5F /* Main.storyboard */; };
@@ -29,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		453738701BC3A9B100796CC7 /* StoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryView.xib; sourceTree = "<group>"; };
 		CC2D00251AF1D31400AF5C5F /* TinderSwipeCardsSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinderSwipeCardsSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC2D00291AF1D31400AF5C5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CC2D002A1AF1D31400AF5C5F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				CC2D004A1AF1D3FA00AF5C5F /* DraggableView.swift */,
 				CC2D004C1AF1D70D00AF5C5F /* OverlayView.swift */,
 				CC2D002E1AF1D31400AF5C5F /* Main.storyboard */,
+				453738701BC3A9B100796CC7 /* StoryView.xib */,
 				CC2D00311AF1D31400AF5C5F /* Images.xcassets */,
 				CC2D00331AF1D31400AF5C5F /* LaunchScreen.xib */,
 				CC2D00281AF1D31400AF5C5F /* Supporting Files */,
@@ -205,6 +208,7 @@
 			files = (
 				CC2D00301AF1D31400AF5C5F /* Main.storyboard in Resources */,
 				CC2D00351AF1D31400AF5C5F /* LaunchScreen.xib in Resources */,
+				453738711BC3A9B200796CC7 /* StoryView.xib in Resources */,
 				CC2D00321AF1D31400AF5C5F /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

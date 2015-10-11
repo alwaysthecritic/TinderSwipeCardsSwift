@@ -16,6 +16,7 @@ let ACTION_MARGIN: CGFloat = 120
 let SCALE_STRENGTH: CGFloat = 4
 /// Upper bar for how much the card shrinks. Higher = shrinks less.
 let SCALE_MAX:CGFloat = 0.93
+// TODO Surely we can get away with just two rotation constants? Confusing!
 /// Maximum rotation allowed in radians. Higher = card can rotate further.
 let ROTATION_MAX: CGFloat = 1
 /// Strength of rotation. Higher = weaker rotation.
@@ -31,11 +32,10 @@ protocol DraggableViewDelegate {
 
 class DraggableView: UIView {
     private var delegate: DraggableViewDelegate!
-    private var panGestureRecognizer: UIPanGestureRecognizer!
     private var originPoint: CGPoint!
     private var overlayView: OverlayView!
-    private var information: UILabel!
-    private var xFromDragOrigin: CGFloat!
+    private var headline: UILabel!
+    private var xFromDragOrigin: CGFloat! = 0
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -44,38 +44,42 @@ class DraggableView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        self.setupView()
+        setupView()
 
-        information = UILabel(frame: CGRectMake(0, 50, self.frame.size.width, 100))
-        information.text = "no info given"
-        information.textAlignment = NSTextAlignment.Center
-        information.textColor = UIColor.blackColor()
-
-        self.backgroundColor = UIColor.whiteColor()
-
-        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "beingDragged:")
-
-        self.addGestureRecognizer(panGestureRecognizer)
-        self.addSubview(information)
-
-        overlayView = OverlayView(frame: CGRectMake(self.frame.size.width/2-100, 0, 100, 100))
-        overlayView.alpha = 0
-        self.addSubview(overlayView)
-
-        xFromDragOrigin = 0
+        let panRecognizer = UIPanGestureRecognizer(target: self, action: "beingDragged:")
+        addGestureRecognizer(panRecognizer)
     }
 
     convenience init(frame: CGRect, label: String, delegate: DraggableViewDelegate) {
         self.init(frame: frame)
-        self.information.text = label
+        self.headline.text = label
         self.delegate = delegate
     }
 
     private func setupView() {
-        self.layer.cornerRadius = 4;
-        self.layer.shadowRadius = 3;
-        self.layer.shadowOpacity = 0.2;
-        self.layer.shadowOffset = CGSizeMake(1, 1);
+        backgroundColor = UIColor.whiteColor()
+
+        layer.cornerRadius = 4
+        layer.shadowRadius = 3
+        layer.shadowOpacity = 0.2
+        layer.shadowOffset = CGSizeMake(1, 1)
+
+        let storyView = NSBundle.mainBundle().loadNibNamed("StoryView", owner: self, options: nil)[0] as! UIView
+        storyView.frame = self.bounds
+        addSubview(storyView)
+
+        storyView.layer.masksToBounds = true
+        storyView.layer.cornerRadius = 4
+        storyView.layer.shadowRadius = 3
+        storyView.layer.shadowOpacity = 0.2
+        storyView.layer.shadowOffset = CGSizeMake(1, 1)
+
+        // TODO Really? Numerical tags is how we find views?! No compile-time safety!
+        headline = storyView.viewWithTag(23) as! UILabel
+
+        overlayView = OverlayView(frame: CGRectMake(self.frame.size.width/2-100, 0, 100, 100))
+        overlayView.alpha = 0
+        addSubview(overlayView)
     }
 
     func beingDragged(gestureRecognizer: UIPanGestureRecognizer) {
