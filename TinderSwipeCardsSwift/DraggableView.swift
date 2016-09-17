@@ -17,8 +17,8 @@ let ROTATION_STRENGTH: Float = 320  //%%% strength of rotation. Higher = weaker 
 let ROTATION_ANGLE: Float = 3.14/8  //%%% Higher = stronger rotation angle
 
 protocol DraggableViewDelegate {
-    func cardSwipedLeft(card: UIView) -> Void
-    func cardSwipedRight(card: UIView) -> Void
+    func cardSwipedLeft(_ card: UIView) -> Void
+    func cardSwipedRight(_ card: UIView) -> Void
 }
 
 class DraggableView: UIView {
@@ -30,7 +30,7 @@ class DraggableView: UIView {
     var xFromCenter: Float!
     var yFromCenter: Float!
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -39,19 +39,19 @@ class DraggableView: UIView {
 
         self.setupView()
 
-        information = UILabel(frame: CGRectMake(0, 50, self.frame.size.width, 100))
+        information = UILabel(frame: CGRect(x: 0, y: 50, width: self.frame.size.width, height: 100))
         information.text = "no info given"
-        information.textAlignment = NSTextAlignment.Center
-        information.textColor = UIColor.blackColor()
+        information.textAlignment = NSTextAlignment.center
+        information.textColor = UIColor.black()
 
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = UIColor.white()
 
-        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "beingDragged:")
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(DraggableView.beingDragged(_:)))
 
         self.addGestureRecognizer(panGestureRecognizer)
         self.addSubview(information)
 
-        overlayView = OverlayView(frame: CGRectMake(self.frame.size.width/2-100, 0, 100, 100))
+        overlayView = OverlayView(frame: CGRect(x: self.frame.size.width/2-100, y: 0, width: 100, height: 100))
         overlayView.alpha = 0
         self.addSubview(overlayView)
 
@@ -63,45 +63,45 @@ class DraggableView: UIView {
         self.layer.cornerRadius = 4;
         self.layer.shadowRadius = 3;
         self.layer.shadowOpacity = 0.2;
-        self.layer.shadowOffset = CGSizeMake(1, 1);
+        self.layer.shadowOffset = CGSize(width: 1, height: 1);
     }
 
-    func beingDragged(gestureRecognizer: UIPanGestureRecognizer) -> Void {
-        xFromCenter = Float(gestureRecognizer.translationInView(self).x)
-        yFromCenter = Float(gestureRecognizer.translationInView(self).y)
+    func beingDragged(_ gestureRecognizer: UIPanGestureRecognizer) -> Void {
+        xFromCenter = Float(gestureRecognizer.translation(in: self).x)
+        yFromCenter = Float(gestureRecognizer.translation(in: self).y)
         
         switch gestureRecognizer.state {
-        case UIGestureRecognizerState.Began:
+        case UIGestureRecognizerState.began:
             self.originPoint = self.center
-        case UIGestureRecognizerState.Changed:
+        case UIGestureRecognizerState.changed:
             let rotationStrength: Float = min(xFromCenter/ROTATION_STRENGTH, ROTATION_MAX)
             let rotationAngle = ROTATION_ANGLE * rotationStrength
             let scale = max(1 - fabsf(rotationStrength) / SCALE_STRENGTH, SCALE_MAX)
 
-            self.center = CGPointMake(self.originPoint.x + CGFloat(xFromCenter), self.originPoint.y + CGFloat(yFromCenter))
+            self.center = CGPoint(x: self.originPoint.x + CGFloat(xFromCenter), y: self.originPoint.y + CGFloat(yFromCenter))
 
-            let transform = CGAffineTransformMakeRotation(CGFloat(rotationAngle))
-            let scaleTransform = CGAffineTransformScale(transform, CGFloat(scale), CGFloat(scale))
+            let transform = CGAffineTransform(rotationAngle: CGFloat(rotationAngle))
+            let scaleTransform = transform.scaleBy(x: CGFloat(scale), y: CGFloat(scale))
             self.transform = scaleTransform
             self.updateOverlay(CGFloat(xFromCenter))
-        case UIGestureRecognizerState.Ended:
+        case UIGestureRecognizerState.ended:
             self.afterSwipeAction()
-        case UIGestureRecognizerState.Possible:
+        case UIGestureRecognizerState.possible:
             fallthrough
-        case UIGestureRecognizerState.Cancelled:
+        case UIGestureRecognizerState.cancelled:
             fallthrough
-        case UIGestureRecognizerState.Failed:
+        case UIGestureRecognizerState.failed:
             fallthrough
         default:
             break
         }
     }
 
-    func updateOverlay(distance: CGFloat) -> Void {
+    func updateOverlay(_ distance: CGFloat) -> Void {
         if distance > 0 {
-            overlayView.setMode(GGOverlayViewMode.GGOverlayViewModeRight)
+            overlayView.setMode(GGOverlayViewMode.ggOverlayViewModeRight)
         } else {
-            overlayView.setMode(GGOverlayViewMode.GGOverlayViewModeLeft)
+            overlayView.setMode(GGOverlayViewMode.ggOverlayViewModeLeft)
         }
         overlayView.alpha = CGFloat(min(fabsf(Float(distance))/100, 0.4))
     }
@@ -113,17 +113,17 @@ class DraggableView: UIView {
         } else if floatXFromCenter < -ACTION_MARGIN {
             self.leftAction()
         } else {
-            UIView.animateWithDuration(0.3, animations: {() -> Void in
+            UIView.animate(withDuration: 0.3, animations: {() -> Void in
                 self.center = self.originPoint
-                self.transform = CGAffineTransformMakeRotation(0)
+                self.transform = CGAffineTransform(rotationAngle: 0)
                 self.overlayView.alpha = 0
             })
         }
     }
     
     func rightAction() -> Void {
-        let finishPoint: CGPoint = CGPointMake(500, 2 * CGFloat(yFromCenter) + self.originPoint.y)
-        UIView.animateWithDuration(0.3,
+        let finishPoint: CGPoint = CGPoint(x: 500, y: 2 * CGFloat(yFromCenter) + self.originPoint.y)
+        UIView.animate(withDuration: 0.3,
             animations: {
                 self.center = finishPoint
             }, completion: {
@@ -134,8 +134,8 @@ class DraggableView: UIView {
     }
 
     func leftAction() -> Void {
-        let finishPoint: CGPoint = CGPointMake(-500, 2 * CGFloat(yFromCenter) + self.originPoint.y)
-        UIView.animateWithDuration(0.3,
+        let finishPoint: CGPoint = CGPoint(x: -500, y: 2 * CGFloat(yFromCenter) + self.originPoint.y)
+        UIView.animate(withDuration: 0.3,
             animations: {
                 self.center = finishPoint
             }, completion: {
@@ -146,11 +146,11 @@ class DraggableView: UIView {
     }
 
     func rightClickAction() -> Void {
-        let finishPoint = CGPointMake(600, self.center.y)
-        UIView.animateWithDuration(0.3,
+        let finishPoint = CGPoint(x: 600, y: self.center.y)
+        UIView.animate(withDuration: 0.3,
             animations: {
                 self.center = finishPoint
-                self.transform = CGAffineTransformMakeRotation(1)
+                self.transform = CGAffineTransform(rotationAngle: 1)
             }, completion: {
                 (value: Bool) in
                 self.removeFromSuperview()
@@ -159,11 +159,11 @@ class DraggableView: UIView {
     }
 
     func leftClickAction() -> Void {
-        let finishPoint: CGPoint = CGPointMake(-600, self.center.y)
-        UIView.animateWithDuration(0.3,
+        let finishPoint: CGPoint = CGPoint(x: -600, y: self.center.y)
+        UIView.animate(withDuration: 0.3,
             animations: {
                 self.center = finishPoint
-                self.transform = CGAffineTransformMakeRotation(1)
+                self.transform = CGAffineTransform(rotationAngle: 1)
             }, completion: {
                 (value: Bool) in
                 self.removeFromSuperview()
