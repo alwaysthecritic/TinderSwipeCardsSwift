@@ -1,4 +1,4 @@
-TinderSwipeCardsSwift
+TinderSwipeCardsSwift - SWIFT 3 PORT
 ======
 
 #### Credits to https://github.com/cwRichardKim/TinderSimpleSwipeCards
